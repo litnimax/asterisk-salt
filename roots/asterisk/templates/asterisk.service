@@ -1,0 +1,19 @@
+[Unit]
+Description=asterisk
+After=network.target
+
+[Service]
+Type=simple
+User={{ user }}
+ExecStart=/usr/sbin/asterisk -f
+Restart=on-failure
+RestartSec=10
+Nice=-10
+LimitNOFILE=30000
+RuntimeDirectory=asterisk
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+

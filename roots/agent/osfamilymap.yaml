@@ -1,0 +1,27 @@
+Debian:
+  pkgs:
+    - python3-click
+    - python3-odoorpc
+    - python3-panoramisk
+    - python3-setproctitle
+    - python3-terminado
+    - iptables
+    - ipset
+  pip:
+    - aiorun
+    - tornado-httpclient-session
+
+RedHat:
+  pkgs:
+    - python3-click
+    - iptables
+    - ipset
+    - gcc
+    - python36-devel
+  pip:
+    - aiorun
+    - tornado-httpclient-session
+    - odoorpc
+    - panoramisk
+    - setproctitle
+    - terminado

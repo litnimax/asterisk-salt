@@ -1,0 +1,19 @@
+[Unit]
+Description=OdooPBX Agent
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/env odoopbx run agent
+KillMode=process
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=10
+RemainAfterExit=no
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=odoopbx-agent
+
+[Install]
+WantedBy=multi-user.target

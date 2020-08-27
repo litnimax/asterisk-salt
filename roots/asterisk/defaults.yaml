@@ -1,0 +1,22 @@
+asterisk:
+  pkgs: []
+  rev: "certified/16.8"
+  src_dir: /usr/src/asterisk
+  menuselect_enable:
+    - app_chanisavail
+    - app_macro
+    - app_mp3
+    - format_mp3
+    - cdr_csv
+    - cdr_odbc
+    - cdr_syslog
+    - chan_sip
+    - codec_opus
+    - BUILD_NATIVE
+    - CORE-SOUNDS-EN-WAV
+    - EXTRA-SOUNDS-EN-WAV
+  menuselect_disable:
+    - CORE-SOUNDS-EN-GSM
+    - pbx_dundi
+  configure_options: --with-pjproject-bundled --with-jansson-bundled --exec-prefix=/usr
+  user: asterisk

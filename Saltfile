@@ -1,0 +1,10 @@
+salt-call:
+  conf_file: minion
+  config_dir: .
+salt-ssh:
+  config_dir: .
+salt-minion:
+  conf_file: minion
+  config_dir: .
+salt-run:
+  config_dir: .

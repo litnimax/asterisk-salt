@@ -1,0 +1,20 @@
+Debian:
+  pkgs: >
+    git wget binutils-dev bison build-essential doxygen flex freetds-dev graphviz libasound2-dev
+    libbluetooth-dev libc-client2007e-dev libcfg-dev libcodec2-dev libcorosync-common-dev libcpg-dev
+    libcurl4-openssl-dev libedit-dev libfftw3-dev libgmime-2.6-dev libgsm1-dev libical-dev libiksemel-dev
+    libjack-jackd2-dev libjansson-dev libldap2-dev liblua5.2-dev libmysqlclient-dev libneon27-dev libnewt-dev
+    libogg-dev libosptk-dev libpopt-dev libpq-dev libradcli-dev libresample1-dev libsndfile1-dev
+    libsnmp-dev libspandsp-dev libspeex-dev libspeexdsp-dev libsqlite3-dev libsrtp2-dev
+    libssl-dev libunbound-dev liburiparser-dev libvorbis-dev libvpb-dev libxml2-dev libxslt1-dev
+    pkgconf portaudio19-dev subversion unixodbc-dev uuid-dev xmlstarlet zlib1g-dev
+RedHat:
+  pkgs: >
+    alsa-lib-devel binutils-devel bison bzip2 fftw-devel flex graphviz jansson-devel libcurl-devel libical-devel
+    libuuid-devel libxml2-devel libxslt-devel mysql-devel net-snmp-devel newt-devel openldap-devel
+    openssl-devel  popt-devel sqlite-devel subversion unbound-devel unixODBC-devel zlib-devel
+  pkgs_not_yet_included: >
+    bluez-libs-devel codec2-devel pkgconfig postgresql-devel
+    corosynclib-devel doxygen freetds-devel gmime-devel gsm-devel hoard iksemel-devel jack-audio-connection-kit-devel
+    libedit-devel libogg-devel libresample-devel libsndfile-devel libsrtp-devel libvorbis-devel lua-devel neon-devel
+    portaudio-devel radcli-devel spandsp-devel speex-devel speexdsp-devel uriparser-devel uw-imap-devel xmlstarlet
