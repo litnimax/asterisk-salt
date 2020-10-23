@@ -33,8 +33,6 @@ class AmiClient:
     events_map = []
 
     async def start(self):
-        # Set trace option
-        self.odoo_trace_ami = __salt__['config.get']('odoo_trace_ami')
         # Set process name
         salt.utils.process.appendproctitle(self.__class__.__name__)
         manager_disconnected = asyncio.Event()
@@ -65,25 +63,6 @@ class AmiClient:
             log.error('Cannot connect to Asterisk AMI: %s', e)
         await manager_disconnected.wait()
 
-    async def download_events_map(self):
-        while True:
-            # We do it forever until we finally receive it.
-            try:
-                events_map = __salt__['odoo.execute'](
-                    'asterisk_common.event',
-                    'search_read',
-                    [[['is_enabled', '=', True], ['source', '=', 'AMI']]],
-                    log_error=False, raise_exc=True
-                )
-                log.debug('Downloaded events map: %s', json.dumps(
-                          self.events_map, indent=2))
-                self.events_map = events_map
-                break
-            except Exception as e:
-                log.error('Events map not loaded: %s', e)
-                # Wait 1 second before next attempt
-                await asyncio.sleep(1)
-
     async def on_asterisk_event(self, manager, event):
         event = dict(event)
         trace_events = __opts__.get('ami_trace_events')
@@ -95,65 +74,8 @@ class AmiClient:
                 log.info('AMI event: %s', json.dumps(event, indent=2))
         # Inject system name in every message
         event['SystemName'] = __grains__['id']
-        # Trace?
-        if self.odoo_trace_ami:
-            log.info('AMI -> Odoo event: %s', json.dumps(event, indent=2))
         # Send event to Salt's event map
         __salt__['event.fire'](event, 'AMI/{}'.format(event['Event']))
-        # Send the event to Odoo if required
-        asyncio.ensure_future(self.send_event_to_odoo(event), loop=self.loop)
-
-    async def send_event_to_odoo(self, event):
-        """
-        Send AMI event to Odoo according to events map.
-        """
-        event_name = event.get('Event')
-        # Iterate over Asterisk events and select only current event handlers.
-        handlers = [k for k in self.events_map if k[
-                    'name'] == event_name and k['source'] == 'AMI']
-        for handler in handlers:
-            asyncio.ensure_future(self.event_handler(handler, event))
-
-    async def event_handler(self, handler, event):
-        event_name = event.get('Event')
-        # Check for event condition
-        if handler.get('condition'):
-            # Handler has a condition so evaluate it first.
-            try:
-                # TODO: Create a more secure eval context.
-                res = eval(handler['condition'],
-                           None, {'event': event})
-                if not res:
-                    # The confition evaluated to False so do not send.
-                    if self.odoo_trace_ami:
-                        log.info(
-                            'Event %s condition evaluated to False',
-                            event_name)
-                    return
-            except Exception:
-                log.exception(
-                    'Error evaluating condition: %s, event: %s',
-                    handler['condition'], event)
-                # The confition evaluated to error so do not send.
-                return
-        # Sometimes it's required to send event to Odoo with a delay.
-        if handler.get('delay'):
-            if self.odoo_trace_ami:
-                log.info('AMI -> Odoo event %s sleep %s before %s...',
-                         event_name, handler['delay'], handler['method'])
-            await asyncio.sleep(int(handler['delay']))
-            if self.odoo_trace_ami:
-                log.info('AMI -> Odoo event %s wakeup for %s.',
-                         event_name, handler['method'])
-        # Finally send event to Odoo.
-        try:
-            __salt__['odoo.execute'](
-                handler['model'],
-                handler['method'],
-                [event])
-            log.debug('Event %s has been sent to Odoo', event_name)
-        except Exception:
-            log.exception('AMI -> Odoo send %s:', event_name)
 
     async def action_event_loop(self):
         log.debug('AMI action event loop started.')

@@ -96,7 +96,7 @@ def put_file(path, data):
     """
     Save a local file from data.
     """
-    log.info('Download from Odoo file %s.', path)
+    log.info('Download file %s.', path)
     open(path, 'wb').write(base64.b64decode(data.encode()))
     return True
 
@@ -108,7 +108,7 @@ def delete_file(path):
 
 
 def get_file(path):
-    log.info('Upload to Odoo file %s.', path)
+    log.info('Upload file %s.', path)
     file_data = open(path, 'rb').read()
     return {
         'file_data': base64.b64encode(file_data).decode(),
@@ -158,26 +158,26 @@ def put_all_configs(data):
 
 
 # Voice prompts management
-def _get_odoo_sounds_dir():
+def _get_sounds_dir():
     data_dir = __salt__['config.get'](
         'asterisk_data_dir', '/var/lib/asterisk/')
-    odoo_sounds_dir = os.path.join(data_dir, 'sounds', 'odoo')
-    if not os.path.isdir(odoo_sounds_dir):
-        os.mkdir(odoo_sounds_dir)
-    return odoo_sounds_dir
+    sounds_dir = os.path.join(data_dir, 'sounds', 'salt')
+    if not os.path.isdir(sounds_dir):
+        os.mkdir(sounds_dir)
+    return sounds_dir
 
 
 def get_prompt(file):
-    return get_file(os.path.join(_get_odoo_sounds_dir(), file))
+    return get_file(os.path.join(_get_sounds_dir(), file))
 
 
 def put_prompt(file, data):
     return put_file(
-        os.path.join(_get_odoo_sounds_dir(), file), data)
+        os.path.join(_get_sounds_dir(), file), data)
 
 
 def delete_prompt(file):
-    delete_file(os.path.join(_get_odoo_sounds_dir(), file))
+    delete_file(os.path.join(_get_sounds_dir(), file))
     return True
 
 

@@ -9,12 +9,12 @@ agent-deps:
 agent-service:
   file:
     - managed
-    - name: /etc/systemd/system/odoopbx-agent.service
+    - name: /etc/systemd/system/asterisk-agent.service
     - source: salt://agent/agent.service
 {% if grains.virtual != "container" %}
   service:
     - running
-    - name: odoopbx-agent
+    - name: asterisk-agent
     - enable: True
     - require:
       - pip: agent-deps

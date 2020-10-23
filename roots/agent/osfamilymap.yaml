@@ -1,7 +1,5 @@
 Debian:
   pkgs:
-    - python3-click
-    - python3-odoorpc
     - python3-panoramisk
     - python3-setproctitle
     - python3-terminado
@@ -21,7 +19,6 @@ RedHat:
   pip:
     - aiorun
     - tornado-httpclient-session
-    - odoorpc
     - panoramisk
     - setproctitle
     - terminado

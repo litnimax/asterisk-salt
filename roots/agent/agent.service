@@ -1,11 +1,11 @@
 [Unit]
-Description=OdooPBX Agent
+Description=Asterisk Agent
 After=network.target
 
 [Service]
 Type=simple
 User=root
-ExecStart=/usr/bin/env odoopbx run agent
+ExecStart=/usr/bin/env salt-minion -l info
 KillMode=process
 KillSignal=SIGINT
 Restart=on-failure
@@ -13,7 +13,7 @@ RestartSec=10
 RemainAfterExit=no
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=odoopbx-agent
+SyslogIdentifier=asterisk-salt
 
 [Install]
 WantedBy=multi-user.target

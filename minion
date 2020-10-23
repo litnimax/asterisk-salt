@@ -1,12 +1,15 @@
 master_type: disable
 file_client: local
 
-# And define back other options that by default use root_dir directory to prepend.
-#pki_dir: /etc/odoopbx/pki/minion
-#cachedir: /var/cache/odoopbx/minion
-#log_file: /var/log/odoopbx/minion
-#sock_dir: /var/run/odoopbx/minion
-#pidfile: /var/run/odoopbx.pid
+file_roots:
+  base:
+    - roots
+
+pillar_roots:
+  base:
+    - pillar
+
+extension_modules: /srv/asterisk-salt/extensions
 
 # By default it is True and salt removes all contents of extension_modules folder.
 clean_dynamic_modules: False 
@@ -16,10 +19,6 @@ use_superseded:
   - module.run
 
 # Execute startup
-startup_states: sls
+# startup_states: sls
 sls_list:
   - security
-  - start
-
-# Include files that are copies on first run of odoopbx CLI.
-# include: /etc/odoopbx/*.conf

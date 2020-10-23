@@ -11,8 +11,11 @@ import salt.ext.tornado.web
 import salt.utils.process
 try:
     from terminado import TermSocket, UniqueTermManager
+    import terminado
+    import tornado_xstatic
     HAS_LIBS = True
 except ImportError:
+    raise
     HAS_LIBS = False
     TermSocket = object  # A stub for MyTermSocket inheritance.
 
@@ -20,6 +23,7 @@ __virtualname__ = 'asterisk_cli'
 
 log = logging.getLogger(__name__)
 
+STATIC_DIR = os.path.join(os.path.dirname(terminado.__file__), "_static")
 
 def __virtual__():
     # Check if asterisk binary is available.
@@ -49,26 +53,19 @@ class MyTermSocket(TermSocket):
         return True
 
     def get(self, *args, **kwargs):
-        server_id = self.get_argument('server')
-        db = self.get_argument('db')
-        if not server_id:
-            raise HTTPError(404)
-        # Check auth token
-        auth = self.get_argument('auth')        
-        url = urljoin(
-            os.environ['ODOO_URL'],
-            '/asterisk_base/console/{}/{}/{}'.format(db, server_id, auth))
-        try:
-            res = requests.get(url)
-            res.raise_for_status()
-            if res.text != 'ok':
-                raise HTTPError(403)            
-        except Exception as e:
-            log.error('Odoo fetch request error: %s', e)
+        # TODO: AUTH
+        # auth = self.get_argument('auth')        
         try:
             return super(TermSocket, self).get(*args, **kwargs)
         except Exception:
             log.exception('TermSocker errror:')
+
+
+class TerminalPageHandler(salt.ext.tornado.web.RequestHandler):
+    def get(self):
+        return self.render("termpage.html", static=self.static_url,
+                           xstatic=self.application.settings['xstatic_url'],
+                           ws_url_path="/ws")
 
 
 def start(
@@ -76,24 +73,25 @@ def start(
         listen_port=8001,
         ssl_crt = None,
         ssl_key = None,
-        odoo_url='http://127.0.0.1:8069',
         asterisk_binary='/usr/sbin/asterisk',
         asterisk_options='-vvvvvr'):
     salt.utils.process.appendproctitle('AsteriskCLI')
     log.info('Starting Asterisk CLI server at %s:%s.',
              listen_address, listen_port)
-    log.info('CLI Server: Odoo configured on %s.', odoo_url)
     io_loop = salt.ext.tornado.ioloop.IOLoop(make_current=False)
     io_loop.make_current()
-    # Set ODOO_URL envvar for MyTermSocket:get().
-    os.environ['ODOO_URL'] = odoo_url
     term_manager = UniqueTermManager(
         shell_command=[asterisk_binary, asterisk_options],
         ioloop=io_loop)
     handlers = [
-        (r'/', MyTermSocket, {'term_manager': term_manager})]
+        (r'/ws', MyTermSocket, {'term_manager': term_manager}),
+        (r"/xstatic/(.*)", tornado_xstatic.XStaticFileHandler,
+            {'allowed_modules': ['termjs']})
+    ]
     # Init app.
-    app = salt.ext.tornado.web.Application(handlers)
+    app = salt.ext.tornado.web.Application(
+        handlers, static_path=STATIC_DIR,
+        xstatic_url=tornado_xstatic.url_maker('/xstatic/'))
     ssl_options = None
     if all([ssl_crt, ssl_key]):
         ssl_options = {"certfile": ssl_crt, "keyfile": ssl_key}
