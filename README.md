@@ -4,6 +4,9 @@ Current list of features:
 * Security service (like fail2ban)
 * WEB CLI (using xterm.js)
 
+# Contacts
+Please create new issues to get in contact.
+
 ## Installation
 Requirements:
 * salt-minion (the Agent)
