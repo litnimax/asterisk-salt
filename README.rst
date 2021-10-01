@@ -5,7 +5,7 @@ The Salt of Asterisk
 Current list of features:
 
 * Asterisk PBX installation management (installation & upgrade)
-* Security service (like fail2ban)
+* Security service (like fail2ban) with API to manage blacklisted / whitelisted IP addresses.
 * WEB CLI (using xterm.js)
 
 Installation
@@ -68,6 +68,38 @@ You can stop the Agent and run it in debug mode from the controlling terminal:
 
     systemctl stop asterisk-agent
     salt-minion -l debug
+
+Webhook configuration for API
+-----------------------------
+It is possible to integrate ipset lists management in a 3-rd party application using
+Salt's network API configuration.
+
+For this we have to also enable Salt master and Salt API processes and re-configure minion
+to connect to local Salt master.
+
+See ``master`` configuration for defaults. Start ``salt-master`` and ``salt-api`` processes.
+
+To make minion connect to the master remove ``master_type`` option from ``minion`` configuration file
+and add there ``master: 127.0.0.1`` (and restart the minion).
+
+Accept minion's key:
+
+.. code:: sh
+
+    salt-key -L
+    salt-key -A
+
+Then test the webhook:
+
+.. code:: sh
+
+    curl -k -X POST https://127.0.0.1:8000/hook/add_whitelist -d -H 'X-Auth-Token: 697adbdc8fe971d09ae4c2a3add7248859c870791' -d ip=1.2.3.4
+
+To debug see master's event bus:
+
+.. code:: sh
+
+    salt-run state.event pretty=True
 
 
 Configuration
