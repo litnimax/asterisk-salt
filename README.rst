@@ -75,7 +75,7 @@ It is possible to integrate ipset lists management in a 3-rd party application u
 Salt's network API configuration.
 
 For this we have to also enable Salt master and Salt API processes and re-configure minion
-to connect to local Salt master.
+to connect to local Salt master. Also do ``pip3 install cherrypy``.
 
 See ``master`` configuration for defaults. Start ``salt-master`` and ``salt-api`` processes.
 
