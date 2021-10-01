@@ -1,0 +1,15 @@
+rest_cherrypy:
+  port: 8000
+  webhook_url: /hook
+  webhook_disable_auth: True
+  ssl_crt: /etc/pki/tls/certs/localhost.crt
+  ssl_key: /etc/pki/tls/certs/localhost.key
+
+engines:
+  - reactor:
+
+reactor:
+  - salt/netapi/hook/add_whitelist:
+    - /etc/salt/roots/reactor/add_whitelist.sls
+
+webhook_auth_token: 697adbdc8fe971d09ae4c2a3add7248859c870791

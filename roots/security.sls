@@ -12,7 +12,7 @@ security-ipset-blacklist:
     - name: blacklist
     - comment: True
     - counters: True
-    - timeout: 3600
+    - timeout: {{ salt['config.get']('blacklist_timeout') }}
 
 security-chan-voip:
   iptables.chain_present:

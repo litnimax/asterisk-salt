@@ -2,6 +2,8 @@ id: asterisk
 
 # Masterless configuration
 master_type: disable
+# Comment above and uncomment below to enable master setup for webhooks.
+# master: 127.0.0.1
 
 # Path to Asterisk Salt engines and modules.
 extension_modules: /etc/salt/extensions
@@ -13,20 +15,20 @@ clean_dynamic_modules: False
 file_client: local
 file_roots:
   base:
-    - roots
+    - /etc/salt/roots
 pillar_roots:
   base:
-    - pillar
+    - /etc/salt/pillar
 
 # Salt minion engines.
 engines:
   - reactor:
   - asterisk_ami
-  - asterisk_cli:
-      listen_address: 0.0.0.0
-      listen_port: 30000      
-      asterisk_binary: /usr/sbin/asterisk
-      asterisk_options: -vvvvvr
+  #- asterisk_cli:
+  #    listen_address: 0.0.0.0
+  #    listen_port: 30000
+  #    asterisk_binary: /usr/sbin/asterisk
+  #    asterisk_options: -vvvvvr
 
 # Make logging a look more pretty and useful.
 log_fmt_console: '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
@@ -57,3 +59,7 @@ ami_register_events:
 ami_trace_events: False
 # If you want minion to log all AMI actions set this to True.
 ami_trace_actions: False
+
+# ipset blacklist expire banned addresses in 10 minutes.
+blacklist_timeout: 600
+
