@@ -12,10 +12,20 @@ Installation
 ------------
 Requirements:
 
+* Python3 and python3-pip.
 * salt-minion (so called "the Agent").
 * Asterisk AMI library: panoramisk.
+* iptables & ipset.
 * ipset python bindings: ipsetpy.
 * terminado & tornado_xstatic (for Asterisk WEB CLI).
+
+Here is the installation script for fresh Ubuntu 20.04.
+
+Install Python3 and pip:
+
+.. code:: sh
+
+    apt install python3-pip iptables ipset
 
 Clone the repo to ``/etc/salt``:
 
@@ -36,13 +46,13 @@ Install Asterisk (if required) or see ``/etc/salt/roots/asterisk/etc`` .conf fil
 
 .. code:: sh
 
-    salt-call state.apply asterisk
+    salt-call -l info state.apply asterisk
 
 And finally install the Salt minion startup service file and start it:
 
 .. code:: sh
 
-    salt-call state.apply agent
+    salt-call -l info state.apply agent
 
 At this point you will have Asterisk and Salt minion up and running.
 
@@ -63,6 +73,10 @@ You can stop the Agent and run it in debug mode from the controlling terminal:
 Configuration
 -------------
 Configuration is located in ``/etc/salt/minion``. Adjust it for your own environment.
+
+Asterisk WEB console
+--------------------
+To be described...
 
 Contacts and issues
 -------------------
