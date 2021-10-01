@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 asterisk:
-  pkgs: []
-  rev: "certified/16.8"
+  pkgs_basic: []
+  pkgs_build: []
+  rev: "16"
   src_dir: /usr/src/asterisk
   menuselect_enable:
     - app_chanisavail
@@ -13,10 +17,16 @@ asterisk:
     - chan_sip
     - codec_opus
     - BUILD_NATIVE
-    - CORE-SOUNDS-EN-WAV
-    - EXTRA-SOUNDS-EN-WAV
   menuselect_disable:
     - CORE-SOUNDS-EN-GSM
     - pbx_dundi
   configure_options: --with-pjproject-bundled --with-jansson-bundled --exec-prefix=/usr
+  sounds:
+    - url: "http://downloads.asterisk.org/pub/telephony/sounds/\
+            asterisk-core-sounds-en-wav-current.tar.gz"
+      subdir: en
+    - url: "http://downloads.asterisk.org/pub/telephony/sounds/\
+            asterisk-extra-sounds-en-wav-current.tar.gz"
+      subdir: en
   user: asterisk
+  force_update: False

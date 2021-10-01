@@ -1,14 +1,14 @@
-//var/log/asterisk/messages
+/var/log/asterisk/messages
 /var/log/asterisk/full
 /var/log/asterisk/debug
-/var/log/asterisk/console
 /var/log/asterisk/security
 /var/log/asterisk/*log
 {
   daily
   missingok
   notifempty
-  rotate 52
+  rotate 60
+  maxage 90
   delaycompress
   copytruncate
   dateext

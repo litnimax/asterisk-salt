@@ -1,13 +1,24 @@
-/root/asterisk-extra-sounds-en-wav-current.tar.gz:
+# -*- coding: utf-8 -*-
+# vim: ft=sls
+---
+
+{%- set tplroot = tpldir.split('/')[0] %}
+{%- from tplroot ~ "/map.jinja" import asterisk with context %}
+
+{% for sounds in asterisk.sounds %}
+{%- set filename = '/var/lib/asterisk/sounds/' ~ salt['file.basename'](sounds.url) %}
+{{ 'asterisk-download-' ~ filename }}:
   file.managed:
-    - skip_verify: True
-    - source: https://downloads.asterisk.org/pub/telephony/sounds/asterisk-extra-sounds-en-wav-current.tar.gz
+    - name: {{ filename }}
+    - source: {{ sounds.url }}
+    - skip_verify: true
+    - creates: {{ filename }}
 
-/usr/share/asterisk/sounds/en:
+{{ 'asterisk-extract-' ~ filename }}:
   archive.extracted:
-   - clean: True
-   - enforce_toplevel: False
-   - require:
-     - file: /root/asterisk-extra-sounds-en-wav-current.tar.gz
-   - source: /root/asterisk-extra-sounds-en-wav-current.tar.gz
-
+    - name: /var/lib/asterisk/sounds/{{ sounds.subdir }}
+    - source: {{ filename }}
+    - enforce_toplevel: false
+    - user: {{ asterisk.user }}
+    - trim_output: 5
+{% endfor %}
