@@ -1,24 +1,59 @@
-master_type: disable
-file_client: local
+id: asterisk
 
+# Masterless configuration
+master_type: disable
+
+# Path to Asterisk Salt engines and modules.
+extension_modules: /etc/salt/extensions
+# By default it is True and salt removes all contents
+# of extension_modules folder after caching and this is not our case!
+clean_dynamic_modules: False 
+
+# Fileserver settings
+file_client: local
 file_roots:
   base:
     - roots
-
 pillar_roots:
   base:
     - pillar
 
-extension_modules: /srv/asterisk-salt/extensions
+# Salt minion engines.
+engines:
+  - reactor:
+  - asterisk_ami
+  - asterisk_cli:
+      listen_address: 0.0.0.0
+      listen_port: 30000      
+      asterisk_binary: /usr/sbin/asterisk
+      asterisk_options: -vvvvvr
 
-# By default it is True and salt removes all contents of extension_modules folder.
-clean_dynamic_modules: False 
+# Make logging a look more pretty and useful.
+log_fmt_console: '%(asctime)s - %(name)s:%(lineno)s - %(levelname)s - %(message)s'
+
+# Reactor settings
+reactor_niceness: 9
+reactor:
+  - 'AMI/*':
+    - salt://reactor/ami_events.sls
 
 # The legacy style will no longer be available starting in the Sodium release
 use_superseded:
   - module.run
 
-# Execute startup
-# startup_states: sls
+# Execute startup states to create iptables & ipset rules.
+startup_states: sls
 sls_list:
   - security
+
+# asterisk_ami engine configuration options.
+ami_login: salt
+ami_secret: salt
+ami_port: 5038
+ami_host: 127.0.0.1
+ami_register_events:
+  - '*'
+# If you want minion to log all AMI events set this to True.
+ami_trace_events: False
+# If you want minion to log all AMI actions set this to True.
+ami_trace_actions: False

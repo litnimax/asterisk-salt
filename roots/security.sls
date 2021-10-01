@@ -24,7 +24,6 @@ security-ports-udp:
     - table: filter
     - family: ipv4
     - chain: INPUT
-    - connstate: NEW
     - jump: voip
     - dports: 4569,5060
     - proto: udp
@@ -36,7 +35,6 @@ security-ports-tcp:
     - table: filter
     - family: ipv4
     - chain: INPUT
-    - connstate: NEW
     - jump: voip
     - dports: 80,443,5038,5039,5060,5061,8088,8089
     - proto: tcp

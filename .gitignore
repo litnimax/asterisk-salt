@@ -1,3 +1,4 @@
+minion.d/_schedule.conf
 *.pyc
 .vagrant
 *.log

@@ -7,6 +7,7 @@ Debian:
     - ipset
   pip:
     - aiorun
+    - ipsetpy
     - tornado-httpclient-session
 
 RedHat:
@@ -22,3 +23,4 @@ RedHat:
     - panoramisk
     - setproctitle
     - terminado
+    - ipsetpy
