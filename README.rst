@@ -12,6 +12,7 @@ Installation
 ------------
 Requirements:
 
+* Asterisk 13.0 or above (old versions of Asterisk do not have security events).
 * Python3 and python3-pip.
 * salt-minion (so called "the Agent").
 * Asterisk AMI library: panoramisk.
